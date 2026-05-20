@@ -1,5 +1,6 @@
 require("dotenv").config();
 
+const mongoose = require("mongoose");
 const connectDB = require("../config/db");
 const Job = require("../models/Job");
 
@@ -17,6 +18,8 @@ const jobs = [
     description:
       "We are looking for a Senior Frontend Developer to join our growing team. You will be responsible for building and maintaining high-quality web applications using modern frameworks.",
     benefits: ["Medical Insurance", "Housing Allowance", "Remote Friendly"],
+    isSaved: false,
+    isActive: true,
   },
   {
     title: "Full Stack Engineer",
@@ -31,6 +34,8 @@ const jobs = [
     description:
       "Join our innovative team as a Full Stack Engineer. You will work on cutting-edge projects and collaborate with cross-functional teams to deliver exceptional products.",
     benefits: ["Transport Allowance", "Social Insurance", "Annual Bonus"],
+    isSaved: false,
+    isActive: true,
   },
   {
     title: "Backend Developer (Node.js)",
@@ -45,6 +50,8 @@ const jobs = [
     description:
       "Build scalable APIs and microservices using Node.js, PostgreSQL, and cloud infrastructure for our enterprise clients.",
     benefits: ["Housing Allowance", "Medical Insurance", "Transport Allowance"],
+    isSaved: false,
+    isActive: true,
   },
   {
     title: "UI/UX Designer",
@@ -59,6 +66,8 @@ const jobs = [
     description:
       "Design beautiful, intuitive interfaces for our SaaS products. Strong Figma skills and a great portfolio required.",
     benefits: ["Remote Friendly", "Flexible Hours"],
+    isSaved: false,
+    isActive: true,
   },
   {
     title: "DevOps Engineer",
@@ -73,6 +82,8 @@ const jobs = [
     description:
       "Manage and optimize our cloud infrastructure on AWS. Experience with Docker, Kubernetes, and CI/CD pipelines required.",
     benefits: ["Housing Allowance", "Medical Insurance", "Transport Allowance"],
+    isSaved: false,
+    isActive: true,
   },
   {
     title: "Mobile Developer (React Native)",
@@ -87,6 +98,8 @@ const jobs = [
     description:
       "Build cross-platform mobile applications using React Native. Knowledge of native iOS/Android development is a plus.",
     benefits: ["Social Insurance", "Annual Bonus", "Flexible Hours"],
+    isSaved: false,
+    isActive: true,
   },
   {
     title: "Junior Frontend Developer",
@@ -101,6 +114,8 @@ const jobs = [
     description:
       "Great opportunity for fresh graduates to kick-start their career in frontend development with mentorship and training.",
     benefits: ["Medical Insurance", "Training Budget"],
+    isSaved: false,
+    isActive: true,
   },
   {
     title: "Data Analyst",
@@ -115,6 +130,8 @@ const jobs = [
     description:
       "Analyze business data and create insightful reports and dashboards to drive decision-making across the organization.",
     benefits: ["Flexible Hours", "Remote Friendly"],
+    isSaved: false,
+    isActive: true,
   },
 ];
 
@@ -122,13 +139,17 @@ const seedJobs = async () => {
   try {
     await connectDB();
 
-    await Job.deleteMany();
+    await Job.deleteMany({});
     await Job.insertMany(jobs);
 
     console.log("Jobs data seeded successfully");
+
+    await mongoose.disconnect();
     process.exit(0);
   } catch (error) {
     console.error("Jobs seeding failed:", error.message);
+
+    await mongoose.disconnect();
     process.exit(1);
   }
 };
