@@ -34,17 +34,6 @@ const jobSchema = new mongoose.Schema(
     category: {
       type: String,
       required: true,
-      enum: [
-        "Frontend",
-        "Backend",
-        "Fullstack",
-        "Mobile",
-        "DevOps",
-        "Design",
-        "Data Science",
-        "QA",
-        "Product Management",
-      ],
     },
 
     postedAt: {
@@ -75,6 +64,11 @@ const jobSchema = new mongoose.Schema(
     isSaved: {
       type: Boolean,
       default: false,
+    },
+
+    isActive: {
+      type: Boolean,
+      default: true,
     },
   },
   {

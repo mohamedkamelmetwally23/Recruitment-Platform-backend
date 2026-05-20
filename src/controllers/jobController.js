@@ -8,7 +8,7 @@ const APIFeatures = require("../utils/apiFeatures");
  */
 const getJobs = async (req, res) => {
   try {
-    const features = new APIFeatures(Job.find(), req.query)
+    const features = new APIFeatures(Job.find({ isActive: true }), req.query)
       .search()
       .filter()
       .sort()
@@ -30,7 +30,35 @@ const getJobs = async (req, res) => {
     });
   }
 };
+ const toggleJobStatus = async (req, res) => {
+   try {
+     const job = await Job.findById(req.params.id);
 
+     if (!job) {
+       return res.status(404).json({
+         success: false,
+         message: "Job not found",
+       });
+     }
+
+     job.isActive = !job.isActive;
+     await job.save();
+
+     res.status(200).json({
+       success: true,
+       message: job.isActive
+         ? "Job activated successfully"
+         : "Job deactivated successfully",
+       data: job,
+     });
+   } catch (error) {
+     res.status(500).json({
+       success: false,
+       message: "Failed to update job status",
+       error: error.message,
+     });
+   }
+ };
 /**
  * GET /api/jobs/filters/options
  * Returns distinct values for building filter UI
@@ -178,35 +206,5 @@ module.exports = {
   createJob,
   updateJob,
   deleteJob,
-  getJobFilterOptions,
-};
-
-
-const patchJob = async (req, res) => {
-  try {
-    const job = await Job.findByIdAndUpdate(
-      req.params.id,
-      { $set: req.body },
-      { new: true, runValidators: true }
-    );
-
-    if (!job) {
-      return res.status(404).json({
-        success: false,
-        message: "Job not found",
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: "Job updated successfully",
-      data: job,
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: "Failed to update job",
-      error: error.message,
-    });
-  }
+  toggleJobStatus,
 };

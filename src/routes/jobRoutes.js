@@ -7,6 +7,7 @@ const {
   updateJob,
   deleteJob,
   getJobFilterOptions,
+  toggleJobStatus,
 } = require("../controllers/jobController");
 
 const validate = require("../middlewares/validate");
@@ -28,6 +29,7 @@ const router = express.Router();
  * could be interpreted as an :id parameter.
  */
 router.get("/filters/options", getJobFilterOptions);
+router.patch("/:id/toggle-status", toggleJobStatus);
 
 /**
  * GET /jobs
