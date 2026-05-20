@@ -207,4 +207,5 @@ module.exports = {
   updateJob,
   deleteJob,
   toggleJobStatus,
+  getJobFilterOptions,
 };
