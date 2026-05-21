@@ -61,7 +61,7 @@ if (role === "job_seeker") {
   userPayload.preferredField = preferredField;
   userPayload.bio = bio;
 }
-
+ 
 if (role === "company") {
   userPayload.companyName = companyName;
   userPayload.industry = industry;
