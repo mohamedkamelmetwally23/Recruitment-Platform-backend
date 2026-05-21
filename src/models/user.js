@@ -13,26 +13,31 @@ const userSchema = new mongoose.Schema(
     name: {
       type: String,
       trim: true,
+      default: "",
     },
 
     title: {
       type: String,
       trim: true,
+      default: "",
     },
 
     location: {
       type: String,
       trim: true,
+      default: "",
     },
 
     experience: {
       type: String,
       trim: true,
+      default: "",
     },
 
     education: {
       type: String,
       trim: true,
+      default: "",
     },
 
     skills: {
@@ -48,25 +53,28 @@ const userSchema = new mongoose.Schema(
     preferredField: {
       type: String,
       trim: true,
+      default: "",
     },
 
     bio: {
       type: String,
       trim: true,
+      default: "",
     },
 
     // Company fields
     companyName: {
       type: String,
       trim: true,
+      default: "",
     },
 
     industry: {
       type: String,
       trim: true,
+      default: "",
     },
 
-    // Shared auth field
     email: {
       type: String,
       required: true,

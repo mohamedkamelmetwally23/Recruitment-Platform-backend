@@ -14,28 +14,49 @@ const generateToken = (userId, role) => {
   );
 };
 
+const formatUserResponse = (user) => {
+  return {
+    _id: user._id,
+    role: user.role,
+    email: user.email,
+    name: user.name,
+    title: user.title,
+    location: user.location,
+    experience: user.experience,
+    education: user.education,
+    skills: user.skills,
+    certifications: user.certifications,
+    preferredField: user.preferredField,
+    bio: user.bio,
+    companyName: user.companyName,
+    industry: user.industry,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+  };
+};
+
 /**
  * POST /api/auth/register
  */
 const register = async (req, res) => {
   try {
-const {
-  role,
-  name,
-  title,
-  location,
-  experience,
-  education,
-  skills,
-  certifications,
-  preferredField,
-  bio,
-  companyName,
-  industry,
-  companyLocation,
-  email,
-  password,
-} = req.body;
+    const {
+      role,
+      name,
+      title,
+      location,
+      experience,
+      education,
+      skills,
+      certifications,
+      preferredField,
+      bio,
+      companyName,
+      industry,
+      email,
+      password,
+    } = req.body;
+
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
@@ -44,29 +65,31 @@ const {
         message: "Email already exists",
       });
     }
-const userPayload = {
-  role,
-  email,
-  password,
-};
 
-if (role === "job_seeker") {
-  userPayload.name = name;
-  userPayload.title = title;
-  userPayload.location = location;
-  userPayload.experience = experience;
-  userPayload.education = education;
-  userPayload.skills = skills || [];
-  userPayload.certifications = certifications || [];
-  userPayload.preferredField = preferredField;
-  userPayload.bio = bio;
-}
- 
-if (role === "company") {
-  userPayload.companyName = companyName;
-  userPayload.industry = industry;
-  userPayload.location = companyLocation;
-}
+    const userPayload = {
+      role,
+      email,
+      password,
+    };
+
+    if (role === "job_seeker") {
+      userPayload.name = name;
+      userPayload.title = title;
+      userPayload.location = location;
+      userPayload.experience = experience;
+      userPayload.education = education;
+      userPayload.skills = skills || [];
+      userPayload.certifications = certifications || [];
+      userPayload.preferredField = preferredField;
+      userPayload.bio = bio;
+    }
+
+    if (role === "company") {
+      userPayload.companyName = companyName;
+      userPayload.industry = industry;
+      userPayload.location = location;
+    }
+
     const user = await User.create(userPayload);
 
     const token = generateToken(user._id, user.role);
@@ -75,16 +98,7 @@ if (role === "company") {
       success: true,
       message: "Account created successfully",
       token,
-      data: {
-        _id: user._id,
-        role: user.role,
-        email: user.email,
-        fullName: user.fullName,
-        preferredField: user.preferredField,
-        companyName: user.companyName,
-        industry: user.industry,
-        location: user.location,
-      },
+      data: formatUserResponse(user),
     });
   } catch (error) {
     res.status(500).json({
@@ -102,9 +116,9 @@ const login = async (req, res) => {
   try {
     const { role, email, password } = req.body;
 
-    const user = await User.findOne({ email }).select("+password");
+    const user = await User.findOne({ email, role }).select("+password");
 
-    if (!user || user.role !== role) {
+    if (!user) {
       return res.status(401).json({
         success: false,
         message: "Invalid email, password, or account type",
@@ -122,20 +136,13 @@ const login = async (req, res) => {
 
     const token = generateToken(user._id, user.role);
 
+    user.password = undefined;
+
     res.status(200).json({
       success: true,
       message: "Login successful",
       token,
-      data: {
-        _id: user._id,
-        role: user.role,
-        email: user.email,
-        fullName: user.fullName,
-        preferredField: user.preferredField,
-        companyName: user.companyName,
-        industry: user.industry,
-        location: user.location,
-      },
+      data: formatUserResponse(user),
     });
   } catch (error) {
     res.status(500).json({
@@ -162,7 +169,7 @@ const getMe = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: user,
+      data: formatUserResponse(user),
     });
   } catch (error) {
     res.status(500).json({
