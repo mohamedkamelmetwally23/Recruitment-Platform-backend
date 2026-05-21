@@ -6,13 +6,50 @@ const registerSchema = Joi.object({
     "any.required": "Role is required",
   }),
 
-  fullName: Joi.when("role", {
+  // Job seeker fields
+  name: Joi.when("role", {
     is: "job_seeker",
     then: Joi.string().trim().min(2).max(100).required().messages({
-      "string.empty": "Full name is required",
-      "any.required": "Full name is required",
+      "string.empty": "Name is required",
+      "any.required": "Name is required",
     }),
     otherwise: Joi.string().trim().allow(""),
+  }),
+
+  title: Joi.when("role", {
+    is: "job_seeker",
+    then: Joi.string().trim().allow("").max(150),
+    otherwise: Joi.string().trim().allow(""),
+  }),
+
+  location: Joi.when("role", {
+    is: "job_seeker",
+    then: Joi.string().trim().allow("").max(150),
+    otherwise: Joi.string().trim().allow(""),
+  }),
+
+  experience: Joi.when("role", {
+    is: "job_seeker",
+    then: Joi.string().trim().allow("").max(100),
+    otherwise: Joi.string().trim().allow(""),
+  }),
+
+  education: Joi.when("role", {
+    is: "job_seeker",
+    then: Joi.string().trim().allow("").max(200),
+    otherwise: Joi.string().trim().allow(""),
+  }),
+
+  skills: Joi.when("role", {
+    is: "job_seeker",
+    then: Joi.array().items(Joi.string().trim()).default([]),
+    otherwise: Joi.array().items(Joi.string().trim()).default([]),
+  }),
+
+  certifications: Joi.when("role", {
+    is: "job_seeker",
+    then: Joi.array().items(Joi.string().trim()).default([]),
+    otherwise: Joi.array().items(Joi.string().trim()).default([]),
   }),
 
   preferredField: Joi.when("role", {
@@ -24,6 +61,13 @@ const registerSchema = Joi.object({
     otherwise: Joi.string().trim().allow(""),
   }),
 
+  bio: Joi.when("role", {
+    is: "job_seeker",
+    then: Joi.string().trim().allow("").max(1000),
+    otherwise: Joi.string().trim().allow(""),
+  }),
+
+  // Company fields
   companyName: Joi.when("role", {
     is: "company",
     then: Joi.string().trim().min(2).max(150).required().messages({
@@ -42,11 +86,11 @@ const registerSchema = Joi.object({
     otherwise: Joi.string().trim().allow(""),
   }),
 
-  location: Joi.when("role", {
+  companyLocation: Joi.when("role", {
     is: "company",
     then: Joi.string().trim().min(2).max(150).required().messages({
-      "string.empty": "Location is required",
-      "any.required": "Location is required",
+      "string.empty": "Company location is required",
+      "any.required": "Company location is required",
     }),
     otherwise: Joi.string().trim().allow(""),
   }),

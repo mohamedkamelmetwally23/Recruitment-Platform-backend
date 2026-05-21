@@ -19,17 +19,23 @@ const generateToken = (userId, role) => {
  */
 const register = async (req, res) => {
   try {
-    const {
-      role,
-      fullName,
-      preferredField,
-      companyName,
-      industry,
-      location,
-      email,
-      password,
-    } = req.body;
-
+const {
+  role,
+  name,
+  title,
+  location,
+  experience,
+  education,
+  skills,
+  certifications,
+  preferredField,
+  bio,
+  companyName,
+  industry,
+  companyLocation,
+  email,
+  password,
+} = req.body;
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
@@ -38,24 +44,29 @@ const register = async (req, res) => {
         message: "Email already exists",
       });
     }
+const userPayload = {
+  role,
+  email,
+  password,
+};
 
-    const userPayload = {
-      role,
-      email,
-      password,
-    };
+if (role === "job_seeker") {
+  userPayload.name = name;
+  userPayload.title = title;
+  userPayload.location = location;
+  userPayload.experience = experience;
+  userPayload.education = education;
+  userPayload.skills = skills || [];
+  userPayload.certifications = certifications || [];
+  userPayload.preferredField = preferredField;
+  userPayload.bio = bio;
+}
 
-    if (role === "job_seeker") {
-      userPayload.fullName = fullName;
-      userPayload.preferredField = preferredField;
-    }
-
-    if (role === "company") {
-      userPayload.companyName = companyName;
-      userPayload.industry = industry;
-      userPayload.location = location;
-    }
-
+if (role === "company") {
+  userPayload.companyName = companyName;
+  userPayload.industry = industry;
+  userPayload.location = companyLocation;
+}
     const user = await User.create(userPayload);
 
     const token = generateToken(user._id, user.role);

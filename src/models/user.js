@@ -9,9 +9,40 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
 
-    fullName: {
+    // Job Seeker fields
+    name: {
       type: String,
       trim: true,
+    },
+
+    title: {
+      type: String,
+      trim: true,
+    },
+
+    location: {
+      type: String,
+      trim: true,
+    },
+
+    experience: {
+      type: String,
+      trim: true,
+    },
+
+    education: {
+      type: String,
+      trim: true,
+    },
+
+    skills: {
+      type: [String],
+      default: [],
+    },
+
+    certifications: {
+      type: [String],
+      default: [],
     },
 
     preferredField: {
@@ -19,6 +50,12 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
 
+    bio: {
+      type: String,
+      trim: true,
+    },
+
+    // Company fields
     companyName: {
       type: String,
       trim: true,
@@ -29,11 +66,7 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
 
-    location: {
-      type: String,
-      trim: true,
-    },
-
+    // Shared auth field
     email: {
       type: String,
       required: true,
