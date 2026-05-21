@@ -13,10 +13,21 @@ const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 
-connectDB();
-
 app.use(cors());
 app.use(express.json());
+
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Database connection failed",
+      error: error.message,
+    });
+  }
+});
 
 app.get("/", (req, res) => {
   res.json({
