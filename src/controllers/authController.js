@@ -179,9 +179,59 @@ const getMe = async (req, res) => {
     });
   }
 };
+const updateMe = async (req, res) => {
+  try {
+    const allowedFields = [
+      "name",
+      "title",
+      "location",
+      "experience",
+      "education",
+      "skills",
+      "certifications",
+      "preferredField",
+      "bio",
+      "companyName",
+      "industry",
+      "email",
+    ];
 
+    const updateData = {};
+
+    allowedFields.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        updateData[field] = req.body[field];
+      }
+    });
+
+    const user = await User.findByIdAndUpdate(req.user._id, updateData, {
+      new: true,
+      runValidators: true,
+    }).select("-__v");
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      data: formatUserResponse(user),
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Failed to update profile",
+      error: error.message,
+    });
+  }
+};
 module.exports = {
   register,
   login,
   getMe,
+  updateMe,
 };

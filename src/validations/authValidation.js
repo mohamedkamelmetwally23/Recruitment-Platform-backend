@@ -6,13 +6,9 @@ const registerSchema = Joi.object({
     "any.required": "Role is required",
   }),
 
-  // Job seeker fields
   name: Joi.when("role", {
     is: "job_seeker",
-    then: Joi.string().trim().min(2).max(100).required().messages({
-      "string.empty": "Name is required",
-      "any.required": "Name is required",
-    }),
+    then: Joi.string().trim().min(2).max(100).required(),
     otherwise: Joi.string().trim().allow(""),
   }),
 
@@ -22,11 +18,7 @@ const registerSchema = Joi.object({
     otherwise: Joi.string().trim().allow(""),
   }),
 
-  location: Joi.when("role", {
-    is: "job_seeker",
-    then: Joi.string().trim().allow("").max(150),
-    otherwise: Joi.string().trim().allow(""),
-  }),
+  location: Joi.string().trim().allow("").max(150),
 
   experience: Joi.when("role", {
     is: "job_seeker",
@@ -54,10 +46,7 @@ const registerSchema = Joi.object({
 
   preferredField: Joi.when("role", {
     is: "job_seeker",
-    then: Joi.string().trim().min(2).max(100).required().messages({
-      "string.empty": "Preferred field is required",
-      "any.required": "Preferred field is required",
-    }),
+    then: Joi.string().trim().min(2).max(100).required(),
     otherwise: Joi.string().trim().allow(""),
   }),
 
@@ -67,66 +56,63 @@ const registerSchema = Joi.object({
     otherwise: Joi.string().trim().allow(""),
   }),
 
-  // Company fields
   companyName: Joi.when("role", {
     is: "company",
-    then: Joi.string().trim().min(2).max(150).required().messages({
-      "string.empty": "Company name is required",
-      "any.required": "Company name is required",
-    }),
+    then: Joi.string().trim().min(2).max(150).required(),
     otherwise: Joi.string().trim().allow(""),
   }),
 
   industry: Joi.when("role", {
     is: "company",
-    then: Joi.string().trim().min(2).max(100).required().messages({
-      "string.empty": "Industry is required",
-      "any.required": "Industry is required",
-    }),
+    then: Joi.string().trim().min(2).max(100).required(),
     otherwise: Joi.string().trim().allow(""),
   }),
 
-  companyLocation: Joi.when("role", {
-    is: "company",
-    then: Joi.string().trim().min(2).max(150).required().messages({
-      "string.empty": "Company location is required",
-      "any.required": "Company location is required",
-    }),
-    otherwise: Joi.string().trim().allow(""),
-  }),
+  email: Joi.string().trim().lowercase().email().required(),
 
-  email: Joi.string().trim().lowercase().email().required().messages({
-    "string.email": "Please enter a valid email address",
-    "string.empty": "Email is required",
-    "any.required": "Email is required",
-  }),
-
-  password: Joi.string().min(6).required().messages({
-    "string.min": "Password must be at least 6 characters",
-    "string.empty": "Password is required",
-    "any.required": "Password is required",
-  }),
+  password: Joi.string().min(6).required(),
 });
 
 const loginSchema = Joi.object({
-  role: Joi.string().valid("job_seeker", "company").required().messages({
-    "any.only": "Role must be either job_seeker or company",
-    "any.required": "Role is required",
-  }),
+  role: Joi.string().valid("job_seeker", "company").required(),
 
-  email: Joi.string().trim().lowercase().email().required().messages({
-    "string.email": "Please enter a valid email address",
-    "string.empty": "Email is required",
-    "any.required": "Email is required",
-  }),
+  email: Joi.string().trim().lowercase().email().required(),
 
-  password: Joi.string().required().messages({
-    "string.empty": "Password is required",
-    "any.required": "Password is required",
-  }),
+  password: Joi.string().required(),
 });
+
+const updateMeSchema = Joi.object({
+  name: Joi.string().trim().min(2).max(100),
+
+  title: Joi.string().trim().allow("").max(150),
+
+  location: Joi.string().trim().allow("").max(150),
+
+  experience: Joi.string().trim().allow("").max(100),
+
+  education: Joi.string().trim().allow("").max(200),
+
+  skills: Joi.array().items(Joi.string().trim()),
+
+  certifications: Joi.array().items(Joi.string().trim()),
+
+  preferredField: Joi.string().trim().allow("").max(100),
+
+  bio: Joi.string().trim().allow("").max(1000),
+
+  companyName: Joi.string().trim().allow("").max(150),
+
+  industry: Joi.string().trim().allow("").max(100),
+
+  email: Joi.string().trim().lowercase().email(),
+})
+  .min(1)
+  .messages({
+    "object.min": "At least one field is required to update profile",
+  });
 
 module.exports = {
   registerSchema,
   loginSchema,
+  updateMeSchema,
 };
